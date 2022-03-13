@@ -8,7 +8,7 @@ import axios from 'axios';
 import {GITHUB_TOKEN} from '../github_token';
 import nookies from 'nookies';
 
-const Home = ({tokenFromServer}: { tokenFromServer: string }) => {
+const Home = ({tokenFromServer, resetUrqlClient}: { tokenFromServer: string }) => {
     const {push} = useRouter();
     const [{data, error}] = useQuery({
         query: USER
@@ -16,6 +16,7 @@ const Home = ({tokenFromServer}: { tokenFromServer: string }) => {
 
     const onLogin = async () => {
         try {
+            resetUrqlClient();
             await axios.post('/api/login', {
                 token: GITHUB_TOKEN
             })
@@ -29,7 +30,7 @@ const Home = ({tokenFromServer}: { tokenFromServer: string }) => {
         <div className={styles.container}>
             <div>
                 <p>HOME PAGE</p>
-                <p>token: {tokenFromServer}</p>
+                <p>token: {tokenFromServer?.slice(-20)}</p>
                 {error ? <p style={{color: 'red'}}>error (no data)</p> : <p>login: {data?.viewer?.login}</p>}
                 <button onClick={onLogin}>go to second page (fake login)</button>
             </div>

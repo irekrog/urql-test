@@ -7,7 +7,7 @@ import {useRouter} from 'next/router';
 import nookies from 'nookies';
 import axios from 'axios';
 
-const SecondPage = ({tokenFromServer}: { tokenFromServer: string }) => {
+const SecondPage = ({tokenFromServer, resetUrqlClient}: { tokenFromServer: string }) => {
     const {replace} = useRouter();
     const [{data, error}] = useQuery({
         query: USER
@@ -15,6 +15,7 @@ const SecondPage = ({tokenFromServer}: { tokenFromServer: string }) => {
 
     const onLogout = async () => {
         try {
+            resetUrqlClient()
             await axios.post('/api/login')
             await replace('/')
         } catch {
@@ -26,7 +27,7 @@ const SecondPage = ({tokenFromServer}: { tokenFromServer: string }) => {
         <div className={styles.container}>
             <div>
                 <p>SECOND PAGE</p>
-                <p>token: {tokenFromServer}</p>
+                <p>token: {tokenFromServer?.slice(-5)}</p>
                 {error ? <p style={{color: 'red'}}>error (no data)</p> : <p>login: {data?.viewer?.login}</p>}
                 <button onClick={onLogout}>go to index page (fake logout)</button>
             </div>
